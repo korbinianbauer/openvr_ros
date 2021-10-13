@@ -18,12 +18,12 @@ class Tracked2TF:
         # We assign the roles ourselves
         self.role_names = ["left", "right"]
         self.class_names = ["invalid", "hmd", "controller", "tracker", "reference", "display"]
-        
+
         # Keeps track of a persistent name for a device_id
         self.name = {}
         # The "key" of this dict is the class number. This dict keeps number of devices in each class.
         self.count = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0}
-    
+
     def register(self, ID, Class):
         if not ID in self.name:
             self.count[Class] += 1
@@ -41,15 +41,20 @@ class Tracked2TF:
 
         # "data" type: TrackedDevicePose()
         tf_msg = TransformStamped()
-        
+
         frame_child = self.register(data.device_header.ID, data.device_header.Class)
 
         tf_msg.header.stamp = data.header.stamp
         tf_msg.header.frame_id = "vr_link"
         tf_msg.child_frame_id = frame_child
+        convert_rotation(data.pose.position)
         tf_msg.transform.translation = data.pose.position
         tf_msg.transform.rotation = data.pose.orientation
         self.br.sendTransform(tf_msg)
+
+    def convert_rotation(tra):
+        # Convertrs the translation form left- to right hand rule.
+        tra.y, tra.z = tra.z, tra.y
 
 if __name__=="__main__":
     rospy.init_node('tracked2tf', anonymous=True)
@@ -60,5 +65,3 @@ if __name__=="__main__":
         rospy.spin()
     except KeyboardInterrupt:
         print("Shutting down ROS Image feature detector module")
-
-

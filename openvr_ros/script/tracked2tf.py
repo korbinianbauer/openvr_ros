@@ -17,8 +17,8 @@ class Tracked2TF:
 
         # We assign the roles ourselves
         self.role_names = ["left", "right"]
-        self.class_names = ["invalid", "hmd", "controller", "tracker", "reference", "display"]
-
+        #self.class_names = ["invalid", "hmd", "controller", "tracker", "reference", "display"]
+        self.class_names = ["invalid", "hmd", "tracker", "tracker", "reference", "display"]
         # Keeps track of a persistent name for a device_id
         self.name = {}
         # The "key" of this dict is the class number. This dict keeps number of devices in each class.
@@ -30,7 +30,8 @@ class Tracked2TF:
             if Class == 1:
                 self.name[ID] = "vr_" + self.class_names[Class]
             else:
-                self.name[ID] = "vr_" + self.class_names[Class] + "_" + self.role_names[self.count[Class]%2]
+                # self.name[ID] = "vr_" + self.class_names[Class] + "_" + self.role_names[self.count[Class]%2]
+                self.name[ID] = "vr_" + self.class_names[Class] + "_" + "right"
             rospy.logwarn("Just registered an {} with name: {}".format(ID, self.name[ID]))
         return self.name[ID]
 

@@ -6,11 +6,13 @@
   <node pkg="openvr_ros" type="tracked2tf.py" name="tracked2tf_node" output="screen" required="true" if="$(arg tf_conversion)">
     <param name="pose_topic" value="/track_publisher/tracked_device_pose" />
   </node>
-
+<!--
   <include file="$(find digiexp_description)/launch/load_model.launch" if="$(arg rviz)">
     <arg name="model" value="$(find openvr_ros)/model/environment.urdf.xacro" />
     <arg name="rviz" value="true" />
     <arg name="gui" value="false" />
     <arg name="rvizconfig" value="$(find openvr_ros)/config/settings.rviz" />
+-->
+  <node pkg="tf" type="static_transform_publisher" name="vr_link_publisher" output="screen" args="1.065 -1.563 0  0 0 0 1" /> 
   </include>
 </launch>

@@ -12,7 +12,8 @@
     <arg name="rviz" value="true" />
     <arg name="gui" value="false" />
     <arg name="rvizconfig" value="$(find openvr_ros)/config/settings.rviz" />
+</include>
 -->
-  <node pkg="tf" type="static_transform_publisher" name="vr_link_publisher" output="screen" args="1.065 -1.563 0  0 0 0 1" /> 
-  </include>
+
+  <node pkg="tf" type="static_transform_publisher" name="vr_link_publisher" output="screen" args="1.065 -1.563 1.65  0 0 0 1 map vr_link 24" /> 
 </launch>

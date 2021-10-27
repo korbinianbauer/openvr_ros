@@ -48,14 +48,11 @@ class Tracked2TF:
         tf_msg.header.stamp = data.header.stamp
         tf_msg.header.frame_id = "vr_link"
         tf_msg.child_frame_id = frame_child
-        self.convert_rotation(data.pose.position)
+        #data.pose.position.z = -data.pose.position.z
         tf_msg.transform.translation = data.pose.position
         tf_msg.transform.rotation = data.pose.orientation
         self.br.sendTransform(tf_msg)
 
-    def convert_rotation(self, tra):
-        # Convertrs the translation form left- to right hand rule.
-        tra.y, tra.z = -tra.z, -tra.y
 
 if __name__=="__main__":
     rospy.init_node('tracked2tf', anonymous=True)

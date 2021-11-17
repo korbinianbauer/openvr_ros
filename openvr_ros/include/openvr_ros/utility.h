@@ -174,6 +174,11 @@ inline void PollPoses(vr::IVRSystem* vr_pointer, const ros::Publisher &publisher
         
         switch (trackedDeviceClass)
         {
+            case vr::ETrackedDeviceClass::TrackedDeviceClass_TrackingReference:
+                printf("Reference\n");
+                vr_pointer->GetControllerStateWithPose(vr::TrackingUniverseStanding, id, &controllerState, sizeof(controllerState), &trackedDevicePose);
+                PublishTrackedDevicePose(vr_pointer, publisher, id, trackedDevicePose);
+                break;
             case vr::ETrackedDeviceClass::TrackedDeviceClass_HMD:
                 // printf("Headset\n");
                 vr_pointer->GetDeviceToAbsoluteTrackingPose(vr::TrackingUniverseStanding, 0, &trackedDevicePose, 1);

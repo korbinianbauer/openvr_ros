@@ -15,5 +15,5 @@
 </include>
 -->
 
-  <node pkg="tf" type="static_transform_publisher" name="vr_link_publisher" output="screen" args="1.065 -1.563 0  1 0 0 1 map vr_link 24" /> 
+  <node pkg="tf" type="static_transform_publisher" name="vr_link_publisher" output="screen" args="0.0 0.0 2.0  1 0 0 1 map vr_link 24" /> 
 </launch>

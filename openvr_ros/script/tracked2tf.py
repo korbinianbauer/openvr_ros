@@ -15,25 +15,20 @@ class Tracked2TF:
         rospy.Subscriber(pose_topic, TrackedDevicePose, self.callback, queue_size=300)
         self.br = tf2_ros.TransformBroadcaster()
 
-        # We assign the roles ourselves
-        self.role_names = ["left", "right"]
-        #self.class_names = ["invalid", "hmd", "controller", "tracker", "reference", "display"]
-        self.class_names = ["invalid", "hmd", "tracker", "tracker", "reference", "display"]
+        self.device_classes = ["invalid", "hmd", "controller", "tracker", "reference", "display"]
         # Keeps track of a persistent name for a device_id
-        self.name = {}
-        # The "key" of this dict is the class number. This dict keeps number of devices in each class.
-        self.count = {0:0, 1:0, 2:0, 3:0, 4:0, 5:0}
+        self.registered_devices = {}
+        # The "key" of this dict is the device_class.
+        # This dict keeps track of the number of devices in each device_class.
+        self.count = {key: 0 for key in self.device_classes}
 
-    def register(self, ID, Class):
-        if not ID in self.name:
-            self.count[Class] += 1
-            if Class == 1:
-                self.name[ID] = "vr_" + self.class_names[Class]
-            else:
-                # self.name[ID] = "vr_" + self.class_names[Class] + "_" + self.role_names[self.count[Class]%2]
-                self.name[ID] = "vr_" + self.class_names[Class] + "_" + "right"
-            rospy.logwarn("Just registered an {} with name: {}".format(ID, self.name[ID]))
-        return self.name[ID]
+    def register(self, ID, device_class):
+        if not ID in self.registered_devices:
+            self.count[device_class] += 1
+            device_name = "vr_" + device_class + "_" + str(self.count[device_class])
+            self.registered_devices[ID] = device_name
+            rospy.logwarn("Just registered a device of class '{}' with ID {}. Naming it: '{}'".format(device_class, ID, device_name))
+        return self.registered_devices[ID]
 
     def callback(self, data):
         # 0. Register the role and class of the object
@@ -43,7 +38,8 @@ class Tracked2TF:
         # "data" type: TrackedDevicePose()
         tf_msg = TransformStamped()
 
-        frame_child = self.register(data.device_header.ID, data.device_header.Class)
+        device_class = self.device_classes[data.device_header.Class]
+        frame_child = self.register(data.device_header.ID, device_class)
 
         tf_msg.header.stamp = data.header.stamp
         tf_msg.header.frame_id = "vr_link"
@@ -62,4 +58,4 @@ if __name__=="__main__":
     try:
         rospy.spin()
     except KeyboardInterrupt:
-        print("Shutting down ROS Image feature detector module")
+        print("Shutting down ROS VR tracker module")
